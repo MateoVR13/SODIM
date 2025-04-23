@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Medication Inventory</h2>
+<a href="{% url 'medication_stock_add' %}">Add Medication</a>
+<ul>
+    {% for stock in stocks %}
+        <li>{{ stock.medication.name }} — {{ stock.quantity }}</li>
+    {% empty %}
+        <li>No medications registered yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h2>Doctors in your EPS</h2>
+<a href="{% url 'doctor_create' %}">Register New Doctor</a>
+<ul>
+    {% for doctor in doctors %}
+        <li>
+            {{ doctor.first_name }} {{ doctor.last_name }} ({{ doctor.specialty }})
+            — <a href="{% url 'doctor_edit' doctor.pk %}">Edit</a>
+            — <a href="{% url 'doctor_delete' doctor.pk %}">Delete</a>
+        </li>
+    {% empty %}
+        <li>No doctors registered yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SODIM</title>
+</head>
+<body>
+    <header>
+        <h1>SODIM System</h1>
+        {% if user.is_authenticated %}
+            <p>
+                Welcome, {{ user.email }} |
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;padding:0;">
+                        Logout
+                    </button>
+                </form>
+            </p>
+        {% endif %}
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
