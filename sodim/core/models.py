@@ -1,3 +1,5 @@
+import random
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
@@ -138,3 +140,42 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
+    
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('requested', 'Requested'),
+        ('sent', 'Sent'),
+        ('arrived', 'Arrived'),
+        ('delivered', 'Delivered'),
+    ]
+
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name='orders')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='orders')
+    medication = models.ForeignKey(Medication, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='requested')
+    estimated_delivery_date = models.DateField()
+    actual_delivery_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Order for {self.medication.name} - {self.status}"
+
+    def generate_estimated_delivery(self):
+        # Si no hay stock, el medicamento tardará entre 1 y 3 días
+        if self.status == 'requested':
+            days = random.randint(1, 3)
+            self.estimated_delivery_date = self.prescription.created_at.date() + timedelta(days=days)
+            self.save()
+
+    def mark_as_sent(self):
+        self.status = 'sent'
+        self.save()
+
+    def mark_as_arrived(self):
+        self.status = 'arrived'
+        self.save()
+
+    def mark_as_delivered(self):
+        self.status = 'delivered'
+        self.actual_delivery_date = self.prescription.created_at.date()
+        self.save()
+

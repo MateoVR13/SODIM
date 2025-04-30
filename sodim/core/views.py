@@ -2,11 +2,10 @@ from django import forms
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
-from .models import Doctor, User, EPSMedicationStock
-from .forms import EPSMedicationStockForm
+from .models import Doctor, User, EPSMedicationStock, Prescription
+from .forms import EPSMedicationStockForm, PrescriptionForm
 
 class CustomLoginView(LoginView):
     template_name = 'core/login.html'
@@ -111,4 +110,25 @@ class EPSMedicationStockCreateView(EPSAdminRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.eps = self.request.user.eps
+        return super().form_valid(form)
+
+# Ver prescripciones de médicos para su EPS
+class PrescriptionListView(LoginRequiredMixin, ListView):
+    model = Prescription
+    template_name = 'core/prescription_list.html'
+    context_object_name = 'prescriptions'
+
+    def get_queryset(self):
+        # Filtramos solo por médicos y pacientes de la misma EPS
+        return Prescription.objects.filter(doctor__eps=self.request.user.eps)
+
+# Crear nueva prescripción
+class PrescriptionCreateView(LoginRequiredMixin, CreateView):
+    model = Prescription
+    form_class = PrescriptionForm
+    template_name = 'core/prescription_form.html'
+    success_url = reverse_lazy('prescription_list')
+
+    def form_valid(self, form):
+        form.instance.doctor = self.request.user.doctor  # Asignar el médico autenticado
         return super().form_valid(form)

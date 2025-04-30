@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Doctor, EPSMedicationStock
+from .models import User, Doctor, EPSMedicationStock, Prescription
 
 
 class DoctorUserCreationForm(forms.ModelForm):
@@ -29,3 +29,8 @@ class EPSMedicationStockForm(forms.ModelForm):
     class Meta:
         model = EPSMedicationStock
         fields = ['medication', 'quantity']
+
+class PrescriptionForm(forms.ModelForm):
+    class Meta:
+        model = Prescription
+        fields = ['patient', 'medication', 'dosage', 'frequency', 'duration_days', 'notes']

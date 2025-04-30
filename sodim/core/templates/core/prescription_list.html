@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h2>Prescriptions</h2>
+<a href="{% url 'prescription_create' %}">Create New Prescription</a>
+<ul>
+    {% for prescription in prescriptions %}
+        <li>{{ prescription.patient }} - {{ prescription.medication }} - {{ prescription.dosage }} - {{ prescription.frequency }} for {{ prescription.duration_days }} days</li>
+    {% empty %}
+        <li>No prescriptions found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

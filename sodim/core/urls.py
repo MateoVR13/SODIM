@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomLoginView, CustomLogoutView, EPSDashboardView, DoctorDashboardView, DoctorListView, DoctorCreateView, DoctorUpdateView, DoctorDeleteView, EPSMedicationStockListView, EPSMedicationStockCreateView
+from .views import CustomLoginView, CustomLogoutView, EPSDashboardView, DoctorDashboardView, DoctorListView, DoctorCreateView, DoctorUpdateView, DoctorDeleteView, EPSMedicationStockListView, EPSMedicationStockCreateView, PrescriptionListView, PrescriptionCreateView
 
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
@@ -12,4 +12,6 @@ urlpatterns = [
     path('eps/doctors/<int:pk>/delete/', DoctorDeleteView.as_view(), name='doctor_delete'),
     path('eps/medications/', EPSMedicationStockListView.as_view(), name='medication_stock_list'),
     path('eps/medications/add/', EPSMedicationStockCreateView.as_view(), name='medication_stock_add'),
+    path('prescriptions/', PrescriptionListView.as_view(), name='prescription_list'),
+    path('prescriptions/create/', PrescriptionCreateView.as_view(), name='prescription_create'),
 ]
