@@ -86,9 +86,15 @@ class EPSMedicationStock(TimestampedModel):
 
     class Meta:
         unique_together = ('eps', 'medication')
-        
+
     def __str__(self):
         return f"{self.eps.name} - {self.medication.name} ({self.quantity})"
+
+    def check_stock(self):
+        if self.quantity > 0:
+            return True
+        return False
+
 
 # Prescription
 class Prescription(TimestampedModel):

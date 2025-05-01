@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import CustomLoginView, CustomLogoutView, EPSDashboardView, DoctorDashboardView, DoctorListView, DoctorCreateView, DoctorUpdateView, DoctorDeleteView, EPSMedicationStockListView, EPSMedicationStockCreateView, PrescriptionListView, PrescriptionCreateView
+from .views import CustomLoginView, CustomLogoutView, EPSDashboardView, DoctorDashboardView, DoctorListView, DoctorCreateView, DoctorUpdateView, DoctorDeleteView, EPSMedicationStockListView, EPSMedicationStockCreateView, PrescriptionListView, PrescriptionCreateView, OrderStatus, LandingPage
 
 urlpatterns = [
+    path('', LandingPage, name='landing_page'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('eps/dashboard/', EPSDashboardView.as_view(), name='eps_dashboard'),
@@ -14,4 +15,5 @@ urlpatterns = [
     path('eps/medications/add/', EPSMedicationStockCreateView.as_view(), name='medication_stock_add'),
     path('prescriptions/', PrescriptionListView.as_view(), name='prescription_list'),
     path('prescriptions/create/', PrescriptionCreateView.as_view(), name='prescription_create'),
+    path('order/status/', OrderStatus, name='order_status'),
 ]

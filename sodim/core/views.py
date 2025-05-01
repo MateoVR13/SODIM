@@ -1,11 +1,25 @@
 from django import forms
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
-from .models import Doctor, User, EPSMedicationStock, Prescription
-from .forms import EPSMedicationStockForm, PrescriptionForm
+from .models import Doctor, User, EPSMedicationStock, Prescription, Order
+from .forms import EPSMedicationStockForm, PrescriptionForm, CustomLoginForm
+
+
+class CustomLoginView(LoginView):
+    template_name = 'core/login.html'
+    form_class = CustomLoginForm
+    redirect_authenticated_user = True
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Iniciar Sesión - SODIM System'
+        return context
+
+def LandingPage(request):
+    return render(request, 'core/landing.html')
 
 class CustomLoginView(LoginView):
     template_name = 'core/login.html'
@@ -122,7 +136,6 @@ class PrescriptionListView(LoginRequiredMixin, ListView):
         # Filtramos solo por médicos y pacientes de la misma EPS
         return Prescription.objects.filter(doctor__eps=self.request.user.eps)
 
-# Crear nueva prescripción
 class PrescriptionCreateView(LoginRequiredMixin, CreateView):
     model = Prescription
     form_class = PrescriptionForm
@@ -131,4 +144,26 @@ class PrescriptionCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.doctor = self.request.user.doctor  # Asignar el médico autenticado
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        # Crear una orden de entrega automáticamente para la prescripción
+        order = Order.objects.create(
+            prescription=form.instance,
+            patient=form.instance.patient,
+            medication=form.instance.medication,
+        )
+
+        # Generar la fecha de entrega estimada
+        order.generate_estimated_delivery()
+        return response
+
+def OrderStatus(request):
+    if request.method == 'GET':
+        patient_id = request.GET.get('patient_id')
+        order_number = request.GET.get('order_number')
+
+        try:
+            order = Order.objects.get(patient__identification_number=patient_id, id=order_number)
+            return render(request, 'core/order_status.html', {'order': order})
+        except Order.DoesNotExist:
+            return render(request, 'core/order_status.html', {'error': 'Order not found.'})

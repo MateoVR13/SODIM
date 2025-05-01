@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, EPS, Doctor, Patient, Medication, EPSMedicationStock, Prescription
+from .models import User, EPS, Doctor, Patient, Medication, EPSMedicationStock, Prescription, Order
 
 # Formulario personalizado para crear usuarios
 class UserCreationForm(forms.ModelForm):
@@ -62,3 +62,4 @@ admin.site.register(Patient)
 admin.site.register(Medication)
 admin.site.register(EPSMedicationStock)
 admin.site.register(Prescription)
+admin.site.register(Order)

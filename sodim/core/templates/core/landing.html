@@ -1,0 +1,236 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="landing-container">
+    <div class="landing-card">
+        <div class="landing-left">
+            <div class="logo-large">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 7h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"></path>
+                    <path d="M4 15V9a2 2 0 0 1 2-2h2"></path>
+                    <path d="M4 13h8"></path>
+                </svg>
+            </div>
+            <h1 class="landing-title">SODIM</h1>
+            <p class="landing-description">Sistema de Optimización y Distribución de Medicamentos</p>
+        </div>
+        <div class="landing-right">
+            <div class="landing-actions">
+                <h2 class="action-title">Bienvenido al Sistema</h2>
+                <p class="action-subtitle">Seleccione una opción para continuar</p>
+                <a href="{% url 'login' %}" class="action-btn primary-btn">
+                    <span>Acceder como EPS</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                </a>
+                <a href="{% url 'order_status' %}" class="action-btn secondary-btn">
+                    <span>Consultar Estado de Orden</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+/* Estilo global de la página landing */
+.landing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 110px); /* Adjust for navbar and footer */
+    padding: 20px;
+}
+
+.landing-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.landing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.landing-left {
+    background-color: var(--primary);
+    color: white;
+    padding: 60px 40px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.logo-large {
+    width: 120px;
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.landing-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.landing-description {
+    font-size: 16px;
+    opacity: 0.9;
+    max-width: 90%;
+}
+
+.landing-right {
+    padding: 60px 40px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.landing-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.action-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.action-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.action-btn span {
+    margin-right: 10px;
+}
+
+.action-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.primary-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.primary-btn:hover svg {
+    transform: translateX(5px);
+}
+
+.secondary-btn {
+    background-color: var(--light);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    margin-top: 10px;
+}
+
+.secondary-btn:hover {
+    background-color: var(--border-color);
+}
+
+.secondary-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .landing-card {
+        flex-direction: column;
+        max-width: 450px;
+    }
+    
+    .landing-left, .landing-right {
+        width: 100%;
+        padding: 40px 30px;
+    }
+    
+    .landing-left {
+        padding-bottom: 30px;
+    }
+    
+    .logo-large {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+    
+    .landing-title {
+        font-size: 30px;
+    }
+    
+    .action-title {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-left, .landing-right {
+        padding: 30px 20px;
+    }
+    
+    .logo-large {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .landing-title {
+        font-size: 26px;
+    }
+    
+    .landing-description {
+        font-size: 14px;
+    }
+    
+    .action-btn {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+}
+</style>
+{% endblock %}
