@@ -1,10 +1,13 @@
 from django import forms
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
-from .models import Doctor, User, EPSMedicationStock, Prescription, Order
+from .models import Patient, Doctor, User, EPSMedicationStock, Prescription, Order
 from .forms import EPSMedicationStockForm, PrescriptionForm, CustomLoginForm
 
 
@@ -37,6 +40,61 @@ class CustomLogoutView(LogoutView):
 # Dashboards
 class EPSDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'core/eps_dashboard.html'
+    
+    @login_required
+    def eps_dashboard(request):
+        """
+        View for the EPS admin dashboard showing key statistics and data
+        """
+        # Check if user is associated with an EPS and is an EPS_ADMIN
+        if not request.user.eps or request.user.role != 'EPS_ADMIN':
+            return render(request, 'core/access_denied.html')
+        
+        # Get user's EPS
+        eps = request.user.eps
+        
+        # Basic statistics
+        patients_count = Patient.objects.filter(eps=eps).count()
+        doctors_count = Doctor.objects.filter(eps=eps).count()
+        prescriptions_count = Prescription.objects.filter(doctor__eps=eps).count()
+        pending_orders_count = Order.objects.filter(
+            patient__eps=eps, 
+            status__in=['requested', 'sent', 'arrived']
+        ).count()
+        
+        # Recent orders (last 10)
+        recent_orders = Order.objects.filter(
+            patient__eps=eps
+        ).select_related('patient', 'medication').order_by('-created_at')[:10]
+        
+        # Medication stock for this EPS
+        medication_stocks = EPSMedicationStock.objects.filter(
+            eps=eps
+        ).select_related('medication').order_by('quantity')
+        
+        # Priority patients (non-regular)
+        priority_patients = Patient.objects.filter(
+            eps=eps, 
+            priority_group__in=['CHILD', 'SENIOR', 'CHRONIC', 'CONTROL']
+        ).order_by('priority_group')[:10]
+        
+        # Recent prescriptions
+        recent_prescriptions = Prescription.objects.filter(
+            doctor__eps=eps
+        ).select_related('patient', 'doctor', 'medication').order_by('-created_at')[:10]
+        
+        context = {
+            'patients_count': patients_count,
+            'doctors_count': doctors_count,
+            'prescriptions_count': prescriptions_count,
+            'pending_orders_count': pending_orders_count,
+            'recent_orders': recent_orders,
+            'medication_stocks': medication_stocks,
+            'priority_patients': priority_patients,
+            'recent_prescriptions': recent_prescriptions,
+        }
+        
+        return render(request, 'core/eps_dashboard.html', context)
 
 class DoctorDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'core/doctor_dashboard.html'

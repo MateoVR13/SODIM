@@ -1,12 +1,196 @@
 {% extends 'core/base.html' %}
+
+{% block title %}Prescripciones | SODIM{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .prescriptions-container {
+        max-width: 900px;
+        margin: 30px auto;
+    }
+    
+    .prescriptions-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    
+    .prescriptions-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-main);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .prescriptions-title svg {
+        color: var(--primary);
+    }
+    
+    .prescription-list {
+        background-color: var(--card-bg);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .prescription-item {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border-color);
+        transition: background-color 0.2s ease;
+    }
+    
+    .prescription-item:last-child {
+        border-bottom: none;
+    }
+    
+    .prescription-item:hover {
+        background-color: rgba(0, 123, 255, 0.03);
+    }
+    
+    .prescription-details {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .prescription-primary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .patient-info {
+        font-weight: 500;
+        color: var(--text-main);
+    }
+    
+    .prescription-date {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+    
+    .prescription-secondary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 5px;
+    }
+    
+    .prescription-data {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-main);
+        font-size: 0.95rem;
+    }
+    
+    .prescription-data svg {
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+    
+    .empty-state {
+        padding: 50px 20px;
+        text-align: center;
+        color: var(--text-secondary);
+    }
+    
+    .empty-state-icon {
+        color: var(--text-secondary);
+        opacity: 0.3;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h2>Prescriptions</h2>
-<a href="{% url 'prescription_create' %}">Create New Prescription</a>
-<ul>
-    {% for prescription in prescriptions %}
-        <li>{{ prescription.patient }} - {{ prescription.medication }} - {{ prescription.dosage }} - {{ prescription.frequency }} for {{ prescription.duration_days }} days</li>
-    {% empty %}
-        <li>No prescriptions found.</li>
-    {% endfor %}
-</ul>
+<div class="content-with-padding">
+    <div class="prescriptions-container">
+        <div class="prescriptions-header">
+            <h2 class="prescriptions-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                    <path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"></path>
+                    <path d="m18 15-2-2"></path>
+                    <path d="m15 18-2-2"></path>
+                </svg>
+                Prescripciones
+            </h2>
+            <a href="{% url 'prescription_create' %}" class="btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                </svg>
+                Nueva Prescripción
+            </a>
+        </div>
+
+        {% if prescriptions %}
+        <ul class="prescription-list">
+            {% for prescription in prescriptions %}
+            <li class="prescription-item">
+                <div class="prescription-details">
+                    <div class="prescription-primary">
+                        <span class="patient-info">{{ prescription.patient }}</span>
+                        <span class="prescription-date">{{ prescription.created_at|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="prescription-secondary">
+                        <div class="prescription-data">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m19 14-5-5-3-3-3 3a1 1 0 0 0 0 1.41c.39.4 1.03.4 1.42 0L11 9l3 3 5.54-5.29a2.01 2.01 0 1 1 2.83 2.83L16.5 15.5"></path>
+                                <path d="M11.5 15.5 9 18c-1 1-2 0-2.5-.5"></path>
+                                <path d="M5.5 13 4 14.5"></path>
+                                <path d="M18 5h1a1 1 0 0 1 1 1v3.5"></path>
+                                <path d="M4 8.5 19.2 5l-1.7 9.2-3 3.8a1 1 0 0 1-1.5 0l-8-8a1 1 0 0 1 0-1.4"></path>
+                            </svg>
+                            {{ prescription.medication }}
+                        </div>
+                        <div class="prescription-data">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 21h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z"></path>
+                                <path d="M12 11v4"></path>
+                                <path d="M12 7h.01"></path>
+                            </svg>
+                            {{ prescription.dosage }}, {{ prescription.frequency }}
+                        </div>
+                        <div class="prescription-data">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ prescription.duration_days }} días
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state">
+            <svg class="empty-state-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                <path d="M9 8h7"></path>
+                <path d="M9 12h7"></path>
+                <path d="M9 16h5"></path>
+            </svg>
+            <h3>No hay prescripciones</h3>
+            <p>No se encontraron prescripciones médicas.</p>
+            <a href="{% url 'prescription_create' %}" class="btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                </svg>
+                Nueva Prescripción
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

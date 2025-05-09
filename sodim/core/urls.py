@@ -25,24 +25,10 @@ urlpatterns = [
     path("eps/doctors/", DoctorListView.as_view(), name="doctor_list"),
     path("eps/doctors/create/", DoctorCreateView.as_view(), name="doctor_create"),
     path("eps/doctors/<int:pk>/edit/", DoctorUpdateView.as_view(), name="doctor_edit"),
-    path(
-        "eps/doctors/<int:pk>/delete/", DoctorDeleteView.as_view(), name="doctor_delete"
-    ),
-    path(
-        "eps/medications/",
-        EPSMedicationStockListView.as_view(),
-        name="medication_stock_list",
-    ),
-    path(
-        "eps/medications/add/",
-        EPSMedicationStockCreateView.as_view(),
-        name="medication_stock_add",
-    ),
+    path("eps/doctors/<int:pk>/delete/", DoctorDeleteView.as_view(), name="doctor_delete"),
+    path("eps/medications/", EPSMedicationStockListView.as_view(), name="medication_stock_list"),
+    path("eps/medications/add/", EPSMedicationStockCreateView.as_view(), name="medication_stock_add"),
     path("prescriptions/", PrescriptionListView.as_view(), name="prescription_list"),
-    path(
-        "prescriptions/create/",
-        PrescriptionCreateView.as_view(),
-        name="prescription_create",
-    ),
+    path("prescriptions/create/", PrescriptionCreateView.as_view(), name="prescription_create"),
     path("order/status/", OrderStatus, name="order_status"),
 ]
