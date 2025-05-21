@@ -65,7 +65,8 @@ class EPSDashboardView(LoginRequiredMixin, TemplateView):
         # Recent orders (last 10)
         recent_orders = Order.objects.filter(
             patient__eps=eps
-        ).select_related('patient', 'medication').order_by('-created_at')[:10]
+        ).select_related('patient', 'medication').order_by('patient__last_name')[:10]
+
         
         # Medication stock for this EPS
         medication_stocks = EPSMedicationStock.objects.filter(
@@ -191,8 +192,9 @@ class PrescriptionListView(LoginRequiredMixin, ListView):
     context_object_name = 'prescriptions'
 
     def get_queryset(self):
-        # Filtramos solo por médicos y pacientes de la misma EPS
-        return Prescription.objects.filter(doctor__eps=self.request.user.eps)
+        # Traer prescripciones junto con sus órdenes para evitar consultas adicionales en plantilla
+        return Prescription.objects.filter(doctor__eps=self.request.user.eps).prefetch_related('orders')
+
 
 class PrescriptionCreateView(LoginRequiredMixin, CreateView):
     model = Prescription

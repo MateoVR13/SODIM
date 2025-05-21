@@ -159,7 +159,7 @@ class Order(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='orders')
     medication = models.ForeignKey(Medication, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='requested')
-    estimated_delivery_date = models.DateField()
+    estimated_delivery_date = models.DateField(null = True)
     actual_delivery_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
