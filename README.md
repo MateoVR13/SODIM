@@ -4,7 +4,7 @@
 SODIM es un sistema de software diseñado para optimizar la entrega de medicamentos en EPS en Colombia. El proyecto busca reducir tiempos de espera, mejorar la trazabilidad de medicamentos y garantizar que los pacientes reciban sus tratamientos oportunamente.
 
 ## Tecnologías
-- **Backend**: Django, FastAPI
+- **Backend**: Django, Python
 - **Base de datos**: SQLite
 - **Frontend**: HTML, CSS & JS
 
@@ -17,11 +17,8 @@ SODIM es un sistema de software diseñado para optimizar la entrega de medicamen
 
 ### Flujo del sistema
 1. Médico genera prescripción médica
-2. Sistema verifica distribución (interna EPS o externa)
-3. Gestión de inventario y disponibilidad
-4. Procesamiento diferenciado (POS / No POS)
-5. Confirmación y entrega de medicamentos
-6. Notificación al paciente
+2. Gestión de inventario y disponibilidad
+3. Confirmación y entrega de medicamentos
 
 ## Beneficios
 
